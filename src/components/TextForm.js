@@ -23,14 +23,21 @@ export default function TextForm(props) {
         let newText = text.toLocaleLowerCase();
         setText(newText);
     }
+    const clearText = () => {
+        setText("");
+    }
     const clickToSentenceCase = () => {
 
         if(!text.length) {
             alert("Enter some text");
             return;
         }
+        
+        
+        let newText = text.toLocaleLowerCase();
+      
         const rg = /(^\w{1}|\.\s*\w{1})/gi;
-        const myString = text.replace(rg, function (toReplace) {
+        const myString = newText.replace(rg, function (toReplace) {
             return toReplace.toUpperCase();
         });
  
@@ -58,6 +65,7 @@ export default function TextForm(props) {
                     <button type="button" className="btn btn-outline-primary mr-5" onClick={clickToUpperCase} >Upper Case</button>
                     <button type="button" className="btn btn-outline-success mr-5" onClick={clickToLowerCase} >Lower Case</button>
                     <button type="button" className="btn btn-outline-secondary mr-5" onClick={clickToSentenceCase} >Sentence Case</button>
+                    <button type="button" className="btn btn-outline-primary mr-7" onClick={clearText} >Clear</button>
                 </div>
 
             </div>
