@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+.heading {
+  color: yellow;
+}
+
+.mr-5 {
+  margin-right: 1rem;
+}
+
+
+.footer-bg {
+  background-color: hsla(0, 0%, 0%, 0.2);
+}
+.main-container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 100vh;
+}
