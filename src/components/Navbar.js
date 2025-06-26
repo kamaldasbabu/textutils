@@ -83,14 +83,14 @@ function Navbar({ title, theme, setTheme, isResponsiveGuideActive, setIsResponsi
                 </select>
 
                 {/* Responsive Guide Button */}
-                <button
+                {/* <button
                     className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
                         isResponsiveGuideActive ? 'bg-purple-600 text-white hover:bg-purple-700' : getDropdownBaseBgClass()
                     }`}
                     onClick={() => setIsResponsiveGuideActive(!isResponsiveGuideActive)}
                 >
                     {isResponsiveGuideActive ? 'Hide Responsive Guide' : 'Show Responsive Guide'}
-                </button>
+                </button> */}
             </div>
         </nav>
     );
@@ -100,8 +100,8 @@ Navbar.propTypes = {
     title: PropTypes.string.isRequired,
     theme: PropTypes.string.isRequired,
     setTheme: PropTypes.func.isRequired,
-    isResponsiveGuideActive: PropTypes.bool.isRequired,
-    setIsResponsiveGuideActive: PropTypes.func.isRequired,
+    // isResponsiveGuideActive: PropTypes.bool.isRequired,
+    // setIsResponsiveGuideActive: PropTypes.func.isRequired,
 };
 
 

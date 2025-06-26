@@ -14,13 +14,13 @@ import TextForm from './components/TextForm';
 
 export default function App() {
     const [theme, setTheme] = useState('light');
-    const [isResponsiveGuideActive, setIsResponsiveGuideActive] = useState(false);
+    // const [isResponsiveGuideActive, setIsResponsiveGuideActive] = useState(false);
 
     const getAppContainerClasses = () => {
         let classes = "min-h-screen flex flex-col font-inter transition-colors duration-300";
-        if (isResponsiveGuideActive) {
-            classes += " border-4 border-dashed border-purple-500 p-4";
-        }
+        // if (isResponsiveGuideActive) {
+        //     classes += " border-4 border-dashed border-purple-500 p-4";
+        // }
         switch (theme) {
             case 'dark':
                 classes += " bg-gray-900 text-gray-100";
@@ -54,15 +54,15 @@ export default function App() {
                 title="Text Utils"
                 theme={theme}
                 setTheme={setTheme}
-                isResponsiveGuideActive={isResponsiveGuideActive}
-                setIsResponsiveGuideActive={setIsResponsiveGuideActive}
+                // isResponsiveGuideActive={isResponsiveGuideActive}
+                // setIsResponsiveGuideActive={setIsResponsiveGuideActive}
             />
 
             <div className="flex-grow container mx-auto px-2 py-4">
                 <TextForm heading="Enter your text below" theme={theme} />
             </div>
 
-            <Footer />
+            <Footer theme={theme} />
         </div>
     );
 }
