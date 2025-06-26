@@ -58,7 +58,7 @@ export default function App() {
                 setIsResponsiveGuideActive={setIsResponsiveGuideActive}
             />
 
-            <div className="flex-grow container mx-auto px-4 py-8">
+            <div className="flex-grow container mx-auto px-2 py-4">
                 <TextForm heading="Enter your text below" theme={theme} />
             </div>
 

@@ -113,7 +113,7 @@ function TextForm({ heading, theme }) {
 
     return (
         <div className="container mx-auto p-4 rounded-lg">
-            <h3 className={`text-2xl font-semibold mb-4 ${getSummaryTextClasses()}`}>{heading}</h3>
+            <h3 className={`text-2xl font-semibold mb-2 ${getSummaryTextClasses()}`}>{heading}</h3>
             <textarea
                 className={getTextAreaClasses()}
                 placeholder='Write something...'
@@ -180,7 +180,7 @@ function TextForm({ heading, theme }) {
                 </button>
             </div>
 
-            <div className={`mt-5 p-4 rounded-lg shadow-inner ${
+            <div className={`mt-1 p-1 rounded-lg shadow-inner ${
                 theme === 'dark' ? 'bg-gray-800' :
                 theme === 'blue' ? 'bg-blue-100' :
                 theme === 'green' ? 'bg-green-100' :
