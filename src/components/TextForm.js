@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import { applyCase } from '../utils/utils';
 
-export default function TextForm(props) {
+
+
+function TextForm({ heading, theme }) {
     const [text, setText] = useState("");
     const [wordCount, setWordCount] = useState(0);
     const [charCount, setCharCount] = useState(0);
-    const [activeCase, setActiveCase] = useState('none'); // 'none', 'uppercase', 'lowercase', 'sentencecase'
+    const [activeCase, setActiveCase] = useState('none');
 
-    // Update word and character counts whenever the text changes
     useEffect(() => {
         updateCounts(text);
     }, [text]);
@@ -18,55 +20,39 @@ export default function TextForm(props) {
         setCharCount(inputText.length);
     };
 
-    const applyCase = (inputText, caseType) => {
-        switch (caseType) {
-            case 'uppercase':
-                return inputText.toUpperCase();
-            case 'lowercase':
-                return inputText.toLowerCase();
-            case 'sentencecase':
-                if (!inputText.length) return "";
-                const newText = inputText.toLowerCase();
-                const rg = /(^\w{1}|\.\s*\w{1})/gi;
-                return newText.replace(rg, (toReplace) => toReplace.toUpperCase());
-            case 'none': // For the "No Style" button
-                return inputText;
-            default:
-                return inputText;
-        }
-    };
-
     const handleCaseButtonClick = (caseType) => {
-        // Prevent action if text area is empty, except for 'none'
         if (!text.length && caseType !== 'none') {
             alert("Enter some text first!");
             return;
         }
-
-        setText(applyCase(text, caseType));
+        setText(applyCase(text, caseType)); // applyCase is in the outer scope
         setActiveCase(caseType);
     };
 
     const handleUtilityButtonClick = async (actionType) => {
         if (actionType === 'clear') {
             setText("");
-            setActiveCase('none'); // Reset active case when clearing
+            setActiveCase('none');
         } else if (actionType === 'copy') {
             if (!text.length) {
                 alert("Nothing to copy!");
                 return;
             }
             try {
-                await navigator.clipboard.writeText(text);
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
                 alert("Text copied to clipboard!");
             } catch (err) {
                 console.error("Failed to copy text: ", err);
-                alert("Failed to copy text. Please try again.");
+                alert("Failed to copy text. Please try again or copy manually.");
             }
         } else if (actionType === 'paste') {
             try {
                 const pastedText = await navigator.clipboard.readText();
-                // Apply current active case to pasted text if not 'none'
                 const processedPastedText = activeCase !== 'none' ? applyCase(pastedText, activeCase) : pastedText;
                 setText(prevText => prevText + processedPastedText);
                 alert("Text pasted!");
@@ -80,96 +66,145 @@ export default function TextForm(props) {
     const handleOnChange = (event) => {
         let newText = event.target.value;
         if (activeCase !== 'none') {
-            newText = applyCase(newText, activeCase);
+            newText = applyCase(newText, activeCase); // applyCase is in the outer scope
         }
         setText(newText);
     };
 
+    const getTextAreaClasses = () => {
+        let classes = "form-control w-full p-3 border rounded-lg focus:ring-2 focus:ring-opacity-50 transition-colors duration-200";
+        if (theme === 'dark') {
+            classes += " bg-gray-700 text-gray-100 border-gray-600 focus:ring-blue-400";
+        } else if (theme === 'blue') {
+            classes += " bg-blue-100 text-blue-900 border-blue-300 focus:ring-blue-400";
+        } else if (theme === 'green') {
+            classes += " bg-green-100 text-green-900 border-green-300 focus:ring-green-400";
+        } else if (theme === 'red') {
+            classes += " bg-red-100 text-red-900 border-red-300 focus:ring-red-400";
+        } else if (theme === 'purple') {
+            classes += " bg-purple-100 text-purple-900 border-purple-300 focus:ring-purple-400";
+        } else if (theme === 'orange') {
+            classes += " bg-orange-100 text-orange-900 border-orange-300 focus:ring-orange-400";
+        }
+        else {
+            classes += " bg-white text-gray-900 border-gray-300 focus:ring-blue-500";
+        }
+        return classes;
+    };
+
+    const getSummaryTextClasses = () => {
+        if (theme === 'dark') {
+            return "text-gray-100";
+        } else if (theme === 'blue') {
+            return "text-blue-800";
+        } else if (theme === 'green') {
+            return "text-green-800";
+        } else if (theme === 'red') {
+            return "text-red-800";
+        } else if (theme === 'purple') {
+            return "text-purple-800";
+        } else if (theme === 'orange') {
+            return "text-orange-800";
+        }
+        else {
+            return "text-gray-800";
+        }
+    };
+
     return (
-        <>
-            <div className="container mb-3">
-                <h3>{props.heading}</h3>
-                <textarea
-                    className="form-control"
-                    placeholder='Write something'
-                    value={text}
-                    onChange={handleOnChange}
-                    id="exampleFormControlTextarea1"
-                    rows="8"
-                ></textarea>
+        <div className="container mx-auto p-4 rounded-lg">
+            <h3 className={`text-2xl font-semibold mb-4 ${getSummaryTextClasses()}`}>{heading}</h3>
+            <textarea
+                className={getTextAreaClasses()}
+                placeholder='Write something...'
+                value={text}
+                onChange={handleOnChange}
+                id="textFormTextArea"
+                rows="8"
+            ></textarea>
 
-                {/* Case Conversion Buttons */}
-                <div className='d-flex flex-wrap gap-2 mt-3'>
-                    <button
-                        type="button"
-                        className={`btn ${activeCase === 'uppercase' ? 'btn-primary' : 'btn-outline-primary'}`}
-                        onClick={() => handleCaseButtonClick('uppercase')}
-                    >
-                        Upper Case
-                    </button>
-                    <button
-                        type="button"
-                        className={`btn ${activeCase === 'lowercase' ? 'btn-success' : 'btn-outline-success'}`}
-                        onClick={() => handleCaseButtonClick('lowercase')}
-                    >
-                        Lower Case
-                    </button>
-                    <button
-                        type="button"
-                        className={`btn ${activeCase === 'sentencecase' ? 'btn-secondary' : 'btn-outline-secondary'}`}
-                        onClick={() => handleCaseButtonClick('sentencecase')}
-                    >
-                        Sentence Case
-                    </button>
-                    <button
-                        type="button"
-                        className={`btn ${activeCase === 'none' ? 'btn-info' : 'btn-outline-info'}`}
-                        onClick={() => handleCaseButtonClick('none')}
-                    >
-                        No Style
-                    </button>
-                </div>
-
-                {/* Utility Buttons */}
-                <div className='d-flex flex-wrap gap-2 mt-3'>
-                    <button
-                        type="button"
-                        className="btn btn-outline-dark"
-                        onClick={() => handleUtilityButtonClick('copy')}
-                    >
-                        Copy Text
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-outline-warning"
-                        onClick={() => handleUtilityButtonClick('paste')}
-                    >
-                        Paste Text
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-outline-danger"
-                        onClick={() => handleUtilityButtonClick('clear')}
-                    >
-                        Clear Text
-                    </button>
-                </div>
-
-                <div className="container my-3">
-                    <h4>Your Text Summary</h4>
-                    <p>
-                        It has **{wordCount}** words and **{charCount}** characters.
-                    </p>
-                </div>
+            {/* Case Conversion Buttons */}
+            <div className='flex flex-wrap gap-3 mt-4'>
+                <button
+                    type="button"
+                    className={`px-4 py-2 rounded-lg transition-colors duration-200 ${activeCase === 'uppercase' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'}`}
+                    onClick={() => handleCaseButtonClick('uppercase')}
+                >
+                    Upper Case
+                </button>
+                <button
+                    type="button"
+                    className={`px-4 py-2 rounded-lg transition-colors duration-200 ${activeCase === 'lowercase' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'}`}
+                    onClick={() => handleCaseButtonClick('lowercase')}
+                >
+                    Lower Case
+                </button>
+                <button
+                    type="button"
+                    className={`px-4 py-2 rounded-lg transition-colors duration-200 ${activeCase === 'sentencecase' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'}`}
+                    onClick={() => handleCaseButtonClick('sentencecase')}
+                >
+                    Sentence Case
+                </button>
+                <button
+                    type="button"
+                    className={`px-4 py-2 rounded-lg transition-colors duration-200 ${activeCase === 'none' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'}`}
+                    onClick={() => handleCaseButtonClick('none')}
+                >
+                    No Style
+                </button>
             </div>
-        </>
+
+            {/* Utility Buttons */}
+            <div className='flex flex-wrap gap-3 mt-3'>
+                <button
+                    type="button"
+                    className="px-4 py-2 rounded-lg bg-gray-600 text-white hover:bg-gray-700 transition-colors duration-200"
+                    onClick={() => handleUtilityButtonClick('copy')}
+                >
+                    Copy Text
+                </button>
+                <button
+                    type="button"
+                    className="px-4 py-2 rounded-lg bg-yellow-600 text-white hover:bg-yellow-700 transition-colors duration-200"
+                    onClick={() => handleUtilityButtonClick('paste')}
+                >
+                    Paste Text
+                </button>
+                <button
+                    type="button"
+                    className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors duration-200"
+                    onClick={() => handleUtilityButtonClick('clear')}
+                >
+                    Clear Text
+                </button>
+            </div>
+
+            <div className={`mt-5 p-4 rounded-lg shadow-inner ${
+                theme === 'dark' ? 'bg-gray-800' :
+                theme === 'blue' ? 'bg-blue-100' :
+                theme === 'green' ? 'bg-green-100' :
+                theme === 'red' ? 'bg-red-100' :
+                theme === 'purple' ? 'bg-purple-100' :
+                theme === 'orange' ? 'bg-orange-100' :
+                'bg-gray-50'
+            }`}>
+                <h4 className={`text-xl font-semibold mb-2 ${getSummaryTextClasses()}`}>Your Text Summary</h4>
+                <p className={`${getSummaryTextClasses()}`}>
+                    It has **{wordCount}** words and **{charCount}** characters.
+                </p>
+            </div>
+        </div>
     );
 }
 
 TextForm.propTypes = {
     heading: PropTypes.string,
+    theme: PropTypes.string.isRequired,
 };
 
 TextForm.defaultProps = {
     heading: "Enter your text",
 };
+
+export default TextForm;

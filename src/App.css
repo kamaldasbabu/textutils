@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .App {
   text-align: center;
 }
@@ -32,10 +36,12 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
+
 .heading {
   color: yellow;
 }
@@ -43,6 +49,7 @@
 .mr-5 {
   margin-right: 1rem;
 }
+
 .mr-7 {
   margin-right: 1.5rem;
 }
@@ -51,6 +58,7 @@
 .footer-bg {
   background-color: hsla(0, 0%, 0%, 0.2);
 }
+
 .main-container {
   display: flex;
   justify-content: space-between;
